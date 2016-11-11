@@ -372,6 +372,24 @@ module.exports = function (grunt) {
     'usemin'
   ]);
 
+  grunt.registerTask('auto-build', [
+    'clean:dist',
+    'createDefaultTemplate',
+    'jst',
+    'sass:dist',
+    'useminPrepare',
+    'imagemin',
+    'htmlmin',
+    'concat',
+    'cssmin',
+    'requirejs',
+    'uglify',
+    'copy',
+    'rev',
+    'usemin',
+    'watch'
+  ]);
+
   grunt.registerTask('default', [
     'jshint',
     'test',
