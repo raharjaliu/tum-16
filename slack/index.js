@@ -56,6 +56,14 @@ var printLottery = function (channel) {
   console.log(currentLottery);
 }
 
+var printHelp = function(channel) {
+  slack.sendMessage('This is an automated Lottery Bot utilizing the ethereum blockchain and smart contracts', channel.id);
+  slack.sendMessage('It accepts the following commands: ');
+  slack.sendMessage('balance: - returns your account balance');
+  slack.sendMessage('running: - returns if a lottery is currently running');
+  slack.sendMessage('join: - lets you join the active lottery');
+}
+
 var processAction = function (message) {
   var channel = slack.dataStore.getChannelGroupOrDMById(message.channel);
   if (message.text.indexOf('lottery') >= 0 && message.text.indexOf('running') >= 0) {
