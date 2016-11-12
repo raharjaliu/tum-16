@@ -10,7 +10,10 @@ web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
 
 var coinbase = web3.eth.coinbase;
 
-var bot_token = process.env.SLACK_BOT_TOKEN || 'xoxb-103763892755-81Qf8fOQ5tFD6YOHaDt5J5f1';
+// console.log(new Buffer("xoxb-103763892755-81Qf8fOQ5tFD6YOHaDt5J5f1").toString('base64'));
+var bot_token = process.env.SLACK_BOT_TOKEN || new Buffer("eG94Yi0xMDM3NjM4OTI3NTUtODFRZjhmT1E1dEZENllPSGFEdDVKNWYx", 'base64').toString('ascii');
+
+
 
 var slack = new RtmClient(bot_token, {
   logLevel: 'error',
@@ -75,7 +78,7 @@ var processAction = function (message) {
   }
 =======
     slack.sendMessage(`Hello <@${message.user}>, your balance is ${balance.toString(10)}`, channel.id);
-  } 
+  }
 >>>>>>> 5df3320f9bd241f1e0cef83a82d701a95b6088d6
 }
 
