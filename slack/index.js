@@ -46,7 +46,12 @@ slack.on(CLIENT_EVENTS.RTM.AUTHENTICATED, function (rtmStartData) {
 
 slack.start();
 
-var channel = "#general";
+var printLottery = function (channel) {
+  slack.sendMessage(`there is a lottery running on ${currentLottery.address}`, channel.id);
+  slack.sendMessage(`here is definition:`, channel.id);
+  slack.sendMessage(`${definition_string}`, channel.id);
+  console.log(currentLottery);
+}
 
 var processAction = function (message) {
   var channel = slack.dataStore.getChannelGroupOrDMById(message.channel);
@@ -55,10 +60,7 @@ var processAction = function (message) {
     if (currentLottery === null) {
       slack.sendMessage(`there is no lottery running`, channel.id);
     } else {
-      slack.sendMessage(`there is a lottery running on ${currentLottery.address}`, channel.id);
-      slack.sendMessage(`here is definition:`, channel.id);
-      slack.sendMessage(`${definition_string}`, channel.id);
-      console.log(currentLottery);
+      printLottery(channel);
     }
   } else if (message.text.indexOf('balance') >= 0) {
     var balance = web3.eth.getBalance(coinbase);
@@ -67,6 +69,7 @@ var processAction = function (message) {
   } else if (message.text.indexOf('create') >= 0 && message.text.indexOf('lottery') >= 0 && currentLottery === null) {
     web3.personal.unlockAccount(web3.eth.accounts[0], "61407843")
     currentLottery = Lottery.new({data: definition, from: web3.eth.accounts[0], gas: 1000000});
+    printLottery(channel);
   }
 }
 
