@@ -72,7 +72,10 @@ var printHelp = function(channel) {
 
 var processAction = function (message) {
   var channel = slack.dataStore.getChannelGroupOrDMById(message.channel);
-  if (message.text.indexOf('lottery') >= 0 && message.text.indexOf('running') >= 0) {
+  if (message.text.indexOf('init') >= 0) {
+    slack.sendMessage('Initializing game', channel.id);
+    console.log('Initializing game');
+  } else if (message.text.indexOf('lottery') >= 0 && message.text.indexOf('running') >= 0) {
     slack.sendMessage('Hello <@'+ message.user +'>!', channel.id);
     if (currentLottery === null) {
       slack.sendMessage('there is no lottery running', channel.id);
