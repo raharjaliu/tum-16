@@ -31,6 +31,7 @@ var definition_string = JSON.stringify(definition_JSON);
 var definition = fs.readFileSync(filePath + binary_file, 'utf8');
 
 var Lottery = web3.eth.contract(definition_JSON);
+currentLottery = Lottery.at(definition);
 
 // The client will emit an RTM.AUTHENTICATED event on successful connection, with the `rtm.start` payload if you want to cache it
 slack.on(CLIENT_EVENTS.RTM.AUTHENTICATED, function (rtmStartData) {
@@ -64,6 +65,7 @@ var processAction = function (message) {
     }
   } else if (message.text.indexOf('balance') >= 0) {
     var balance = web3.eth.getBalance(coinbase);
+<<<<<<< HEAD
     slack.sendMessage('Hello <@${message.user}>, your balance is ${balance.toString(10)}', channel.id);
 
   } else if (message.text.indexOf('create') >= 0 && message.text.indexOf('lottery') >= 0 && currentLottery === null) {
@@ -71,6 +73,10 @@ var processAction = function (message) {
     currentLottery = Lottery.new({data: definition, from: web3.eth.accounts[0], gas: 1000000});
     printLottery(channel);
   }
+=======
+    slack.sendMessage(`Hello <@${message.user}>, your balance is ${balance.toString(10)}`, channel.id);
+  } 
+>>>>>>> 5df3320f9bd241f1e0cef83a82d701a95b6088d6
 }
 
 slack.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
