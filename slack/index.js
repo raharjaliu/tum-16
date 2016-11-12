@@ -24,6 +24,8 @@ var slack = new RtmClient(bot_token, {
 var me = null;
 var currentLottery = null;
 
+var playerNum = 0;
+
 var accountSid = 'SKfad8a61beb60a92f0993267f0921c4b2';
 var authToken = 'YKq7ukK3P0eDyipzY6UaEaAR6EUE2lqK';
 var accountRealSid = 'ACb44609cbe49e73fe7beefab010c29c3e';
@@ -75,7 +77,7 @@ var processAction = function (message) {
   if (message.text.indexOf('init') >= 0) {
     slack.sendMessage('Initializing game', channel.id);
     console.log('Initializing game');
-    currentLottery.initiallize.sendTransaction({from: web3.eth.accounts[0]});
+    currentLottery.initiallize.sendTransaction({from: web3.eth.accounts[0], gas:1000000});
   } else if (message.text.indexOf('lottery') >= 0 && message.text.indexOf('running') >= 0) {
     slack.sendMessage('Hello <@'+ message.user +'>!', channel.id);
     if (currentLottery === null) {
@@ -93,6 +95,19 @@ var processAction = function (message) {
     var telephone_number = message.text.split(" ") [2];
     currentLottery.addPlayer.sendTransaction(telephone_number, {from: web3.eth.accounts[0]});
     slack.sendMessage('<@'+ message.user +'>, your are now added to lottery', channel.id);
+    counter += 1;
+    if (counter == slack.users.length - 1) {
+      slack.sendMessage('All players are now registered. Starting game...', channel.id);
+      currentLottery.endGame.sendTransaction({from: web3.eth.accounts[0]});
+      currentLottery.chooseWinner.sendTransaction({from: web3.eth.accounts[0]});
+      currentLottery.getWinner.sendTransaction({from: web3.eth.accounts[0]},
+        function(error, result){
+          if(!error)
+            console.log(result)
+          else
+            console.error(error);
+      });
+    }
   } else if(message.text.indexOf('help') >= 0) {
 	   printHelp(channel);
   } else if (message.text.indexOf('notify') >= 0) {
