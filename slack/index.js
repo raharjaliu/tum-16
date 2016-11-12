@@ -1,31 +1,41 @@
+//access filesystem
 var fs = require('fs');
+//define slackclient
 var RtmClient = require('@slack/client').RtmClient;
+//reading functions from slack
 var CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS;
 var RTM_CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS.RTM;
 var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
+//
 var MemoryDataStore = require('@slack/client').MemoryDataStore;
+//access to ethereum library & instantiation
 var Web3 = require('./node_modules/web3');
 var web3 = new Web3();
+//set provider for ethereum     ???
 web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
-
+//wallet
 var coinbase = web3.eth.coinbase;
-
+//encoding obsolete
 // console.log(new Buffer("xoxb-103763892755-81Qf8fOQ5tFD6YOHaDt5J5f1").toString('base64'));
+//instantiation of bot
 var bot_token = process.env.SLACK_BOT_TOKEN || "xoxb-103158368448-iuqB2zji8VR5TGEs0UWi0o4X";
+//bot name
 var bot_name = 'fancypants';
-
+//initialize slack
 var slack = new RtmClient(bot_token, {
   logLevel: 'error',
+//initialize Datastore ???
   dataStore: new MemoryDataStore(),
   autoReconnect: true,
   autoMark: true
 });
-
+//Global Variables
 var me = null;
 var currentLottery = null;
-
+//counter of participants
 var playerNum = 0;
 
+//twilio variables
 var accountSid = 'SKfad8a61beb60a92f0993267f0921c4b2';
 var authToken = 'YKq7ukK3P0eDyipzY6UaEaAR6EUE2lqK';
 var accountRealSid = 'ACb44609cbe49e73fe7beefab010c29c3e';
