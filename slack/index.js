@@ -82,6 +82,8 @@ var processAction = function (message) {
     console.log(web3.eth.accounts[0]);
     currentLottery.addPlayer.sendTransaction(message.user, {from: web3.eth.accounts[0]});
     slack.sendMessage('<@${message.user}>, your are now added to lottery', channel.id);
+  } else if(message.text.indexOf('help') >= 0) {
+	printHelp(channel);
   }
 }
 
