@@ -43,7 +43,7 @@ currentLottery = Lottery.at(definition);
 
 // The client will emit an RTM.AUTHENTICATED event on successful connection, with the 'rtm.start' payload if you want to cache it
 slack.on(CLIENT_EVENTS.RTM.AUTHENTICATED, function (rtmStartData) {
-  console.log('Logged in as ${rtmStartData.self.name} of team ${rtmStartData.team.name}, but not yet connected to a channel');
+  console.log('Logged in as ' + rtmStartData.self.name + ' of team ' + rtmStartData.team.name + ', but not yet connected to a channel');
   for (var user_id in slack.dataStore.users) {
     var user = slack.dataStore.users[user_id];
     if (user.name === 'fancypants') {
@@ -56,9 +56,9 @@ slack.on(CLIENT_EVENTS.RTM.AUTHENTICATED, function (rtmStartData) {
 slack.start();
 
 var printLottery = function (channel) {
-  slack.sendMessage('there is a lottery running on ${currentLottery.address}', channel.id);
+  slack.sendMessage('there is a lottery running on ' + currentLottery.address, channel.id);
   slack.sendMessage('here is definition:', channel.id);
-  slack.sendMessage('${definition_string}', channel.id);
+  slack.sendMessage(definition_string, channel.id);
   console.log(currentLottery);
 }
 
