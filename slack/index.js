@@ -94,7 +94,7 @@ var processAction = function (message) {
     client.accounts(accountRealSid).messages.create({
         to: telNumberTo,
         from: telNumberFrom,
-        body: "message",
+        body: 'message',
     }, function(err, message) {
         console.log(message.sid);
     });
