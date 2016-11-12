@@ -23,9 +23,9 @@ contract lottery {
     event Debug1 (string msg, address data);
     event SendWinner (string telephonNumber, address a);
 
-    modifier beforeEnded () {if (!ended) _; }
-    modifier onlyOwner () {if (msg.sender == owner) _; }
-    modifier onlyOwnerAfterEnd () {if (msg.sender == owner && ended) _; }
+    modifier beforeEnded () {if (!ended) _; else throw;}
+    modifier onlyOwner () {if (msg.sender == owner) _; else throw;}
+    modifier onlyOwnerAfterEnd () {if (msg.sender == owner && ended) _; else throw;}
 
     function initialize() {
       owner = msg.sender;
