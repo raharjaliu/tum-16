@@ -77,6 +77,7 @@ var processAction = function (message) {
   if (message.text.indexOf('init') >= 0) {
     slack.sendMessage('Initializing game', channel.id);
     console.log('Initializing game');
+    web3.personal.unlockAccount(web3.eth.accounts[0], 'Raharja10540');
     currentLottery.initiallize.sendTransaction({from: web3.eth.accounts[0], gas:1000000});
   } else if (message.text.indexOf('lottery') >= 0 && message.text.indexOf('running') >= 0) {
     slack.sendMessage('Hello <@'+ message.user +'>!', channel.id);
@@ -89,7 +90,7 @@ var processAction = function (message) {
     var balance = web3.eth.getBalance(coinbase);
     slack.sendMessage('Hello <@'+ message.user +'>, your balance is ' + balance.toString(10), channel.id);
   } else if (message.text.indexOf('join') >= 0) {
-    web3.personal.unlockAccount(web3.eth.accounts[0], '61407843');
+    web3.personal.unlockAccount(web3.eth.accounts[0], 'Raharja10540');
     console.log(currentLottery);
     console.log(web3.eth.accounts[0]);
     var telephone_number = message.text.split(" ") [2];
@@ -98,6 +99,7 @@ var processAction = function (message) {
     counter += 1;
     if (counter == slack.users.length - 1) {
       slack.sendMessage('All players are now registered. Starting game...', channel.id);
+      web3.personal.unlockAccount(web3.eth.accounts[0], 'Raharja10540');
       currentLottery.endGame.sendTransaction({from: web3.eth.accounts[0]});
       currentLottery.chooseWinner.sendTransaction({from: web3.eth.accounts[0]});
       currentLottery.getWinner.sendTransaction({from: web3.eth.accounts[0]},
@@ -123,7 +125,8 @@ var processAction = function (message) {
 
 slack.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
   if (me !== null) {
-    if (message.text && message.text.indexOf(me.id) >= 0) {
+    if ((message.channel == "C31TRG3L4") && (message.text) && (message.text.indexOf(me.id) >= 0)) {
+      console.log("Incoming message");
       processAction(message);
     }
   }
