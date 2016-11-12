@@ -75,6 +75,7 @@ var processAction = function (message) {
   if (message.text.indexOf('init') >= 0) {
     slack.sendMessage('Initializing game', channel.id);
     console.log('Initializing game');
+    currentLottery.initiallize.sendTransaction({from: web3.eth.accounts[0]});
   } else if (message.text.indexOf('lottery') >= 0 && message.text.indexOf('running') >= 0) {
     slack.sendMessage('Hello <@'+ message.user +'>!', channel.id);
     if (currentLottery === null) {
