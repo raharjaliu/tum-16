@@ -109,7 +109,7 @@ slack.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
   }
   if (message.subtype && message.subtype == "channel_join")
   {
-      slack.sendMessage('<@'+ event.user +'>, please enter your telephone number', event.channel);
+      slack.sendMessage('<@'+ message.user +'>, please enter your telephone number', message.channel);
 }
     console.log('Message:', message);
 });
