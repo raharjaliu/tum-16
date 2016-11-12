@@ -3,12 +3,12 @@ pragma solidity ^0.4.2;
 contract lottery {
 
     struct Player {
-        string _name;
+        string _telephonNumber;
         address _address;
     }
 
     Player NONE = Player({
-        _name: '', _address: 0
+        _telephonNumber: '', _address: 0
 
     });
 
@@ -19,7 +19,10 @@ contract lottery {
     Player winner;
     bool ended = false;
 
-    event showAdr (string msg, address a);
+
+    event Debug1 (string msg, address data);
+    event SendWinner (string telephonNumber, address a);
+
     modifier beforeEnded () {if (!ended) _; }
     modifier onlyOwner () {if (msg.sender == owner) _; }
     modifier onlyOwnerAfterEnd () {if (msg.sender == owner && ended) _; }
@@ -28,15 +31,15 @@ contract lottery {
       owner = msg.sender;
     }
 
-    function addPlayer (string fullname) beforeEnded  {
-        Player memory existing = getExisting(msg.sender, fullname);
+    function addPlayer (string telephonNumber) beforeEnded  {
+        Player memory existing = getExisting(msg.sender, telephonNumber);
         if (isNull(existing)) {
             players.push(Player({
-                _name:fullname,
+                _telephonNumber:telephonNumber,
                 _address:msg.sender
             }));
             updateHash(msg.sender);
-            showAdr("Participant Added: ", msg.sender);
+            Debug1("Participant Added: ", msg.sender);
         } else throw;
     }
 
@@ -53,7 +56,7 @@ contract lottery {
 
     function chooseWinner() onlyOwnerAfterEnd {
       winner = players[hashed % players.length];
-      showAdr(winner._name, winner._address);
+      SendWinner(winner._telephonNumber, winner._address);
     }
 
     function getWinner () returns(address) {
@@ -62,10 +65,10 @@ contract lottery {
 
     function kill () onlyOwner {selfdestruct(owner);}
 
-     function getExisting(address _address, string _fullname) internal returns (Player) {
+     function getExisting(address _address, string _telephonNumber) internal returns (Player) {
         for(uint i = 0; i < players.length; i++) {
             Player player = players[i];
-            if(player._address == _address || stringsEqual(player._name, _fullname))
+            if(player._address == _address || stringsEqual(player._telephonNumber, _telephonNumber))
                 return player;
         }
         return NONE;
@@ -87,10 +90,10 @@ contract lottery {
 
       if(now % 2 == 0) {
         hashed = hashed * uint(sha3(a));
-        showAdr("Hashed with Adress: ",msg.sender);
+        Debug1("Hashed with Adress: ",msg.sender);
       } else {
         hashed = hashed * uint(sha3(now));
-        showAdr("Hashed with Time: ",address(now));
+        Debug1("Hashed with Time: ",address(now));
       }
     }
 }
