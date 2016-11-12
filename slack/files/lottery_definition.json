@@ -1,0 +1,15 @@
+[{
+"constant":true,
+"inputs":[{"name":"participant","type":"address"}],
+"name":"getDonation",
+"outputs":[{"name":"donation","type":"uint8"}],
+"payable":false,
+"type":"function"
+},{
+"constant":false,
+"inputs":[],
+"name":"doDonate",
+"outputs":[],
+"payable":false,
+"type":"function"
+}]
