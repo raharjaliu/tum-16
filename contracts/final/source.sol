@@ -14,10 +14,10 @@ contract lottery {
 
     address owner;
 
-    Player[] players;
-    uint hashed = 0;
-    Player winner;
-    bool ended = false;
+    Player[] public players;
+    uint public hashed = 0;
+    Player public winner;
+    bool public ended = false;
 
 
     event Debug1 (string msg, address data);
