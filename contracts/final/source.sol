@@ -14,18 +14,18 @@ contract lottery {
 
     address owner;
 
-    Player[] players;
-    uint hashed = 0;
-    Player winner;
-    bool ended = false;
+    Player[] public players;
+    uint public hashed = 0;
+    Player public winner;
+    bool public ended = false;
 
 
     event Debug1 (string msg, address data);
     event SendWinner (string telephonNumber, address a);
 
-    modifier beforeEnded () {if (!ended) _; }
-    modifier onlyOwner () {if (msg.sender == owner) _; }
-    modifier onlyOwnerAfterEnd () {if (msg.sender == owner && ended) _; }
+    modifier beforeEnded () {if (!ended) _; else throw;}
+    modifier onlyOwner () {if (msg.sender == owner) _; else throw;}
+    modifier onlyOwnerAfterEnd () {if (msg.sender == owner && ended) _; else throw;}
 
     function initialize() {
       owner = msg.sender;
