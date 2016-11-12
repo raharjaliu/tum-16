@@ -1,15 +1,1 @@
-[{
-"constant":true,
-"inputs":[{"name":"participant","type":"address"}],
-"name":"getDonation",
-"outputs":[{"name":"donation","type":"uint8"}],
-"payable":false,
-"type":"function"
-},{
-"constant":false,
-"inputs":[],
-"name":"doDonate",
-"outputs":[],
-"payable":false,
-"type":"function"
-}]
+[ { "constant": false, "inputs": [], "name": "kill", "outputs": [], "payable": false, "type": "function" }, { "constant": false, "inputs": [ { "name": "range", "type": "uint256" } ], "name": "randomFrom", "outputs": [ { "name": "", "type": "uint256" } ], "payable": false, "type": "function" }, { "constant": false, "inputs": [], "name": "endGame", "outputs": [], "payable": false, "type": "function" }, { "constant": false, "inputs": [], "name": "chooseWinner", "outputs": [], "payable": false, "type": "function" }, { "constant": false, "inputs": [ { "name": "fullname", "type": "string" } ], "name": "addPlayer", "outputs": [], "payable": false, "type": "function" }, { "inputs": [], "type": "constructor" }, { "anonymous": false, "inputs": [ { "indexed": false, "name": "msg", "type": "string" }, { "indexed": false, "name": "a", "type": "address" } ], "name": "showAdr", "type": "event" } ]
