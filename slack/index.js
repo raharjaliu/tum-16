@@ -107,9 +107,8 @@ slack.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
       processAction(message);
     }
   }
-  if (message.subtype && message.subtype == "channel_join")
-  {
+  if (message.subtype && message.subtype == "channel_join") {
       slack.sendMessage('<@'+ message.user +'>, please execute the "@fancypants join (telephone number)" ', message.channel);
-}
-    console.log('Message:', message);
+  }
+  console.log('Message:', message);
 });
