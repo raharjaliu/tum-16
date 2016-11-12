@@ -4,11 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"    
+    "start": "node index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@slack/client": "^3.6.1"
+    "@slack/client": "^3.6.1",
+    "web3": "^0.17.0-beta"
   }
 }

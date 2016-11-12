@@ -3,8 +3,16 @@ var CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS;
 var RTM_CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS.RTM;
 var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
 var MemoryDataStore = require('@slack/client').MemoryDataStore;
+var Web3 = require('./node_modules/web3');
+var web3 = new Web3();
+web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
 
-var bot_token = process.env.SLACK_BOT_TOKEN || 'xoxb-104489032486-nS1gJPkGrMdjs6mfcloHp60R';
+var coinbase = web3.eth.coinbase;
+
+var balance = web3.eth.getBalance(coinbase);
+console.log(balance.toString(10));
+
+var bot_token = process.env.SLACK_BOT_TOKEN || '';
 
 var slack = new RtmClient(bot_token, {
   logLevel: 'error',

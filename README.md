@@ -15,3 +15,7 @@ or
 	sudo ln -s ${path_to_nginx_conf} /etc/nginx/sites-available/my.conf
 	sudo ln -s /etc/nginx/sites-available/my.conf /etc/nginx/sites-enabled/my.conf
 	sudo service nginx reload
+
+## Run geth with HttpRegistry 
+
+	geth --rpccorsdomain "*" --rpc --networkid 8545 --mine --minerthreads=4 --testnet console 2>>geth.log
