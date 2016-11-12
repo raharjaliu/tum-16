@@ -23,6 +23,12 @@ var slack = new RtmClient(bot_token, {
 var me = null;
 var currentLottery = null;
 
+var accountSid = 'SKfad8a61beb60a92f0993267f0921c4b2';
+var authToken = 'YKq7ukK3P0eDyipzY6UaEaAR6EUE2lqK';
+var accountRealSid = 'ACb44609cbe49e73fe7beefab010c29c3e';
+var telNumberTo = "+4917643424166";
+var telNumberFrom = "+4915735994166";
+var client = require('twilio')(accountSid, authToken);
 
 var filePath = './files/';
 var binary_file = 'lottery_binary.txt';
@@ -84,6 +90,14 @@ var processAction = function (message) {
     slack.sendMessage('<@${message.user}>, your are now added to lottery', channel.id);
   } else if(message.text.indexOf('help') >= 0) {
 	printHelp(channel);
+  } else if (message.text.indexOf('notify') >= 0) {
+    client.accounts(accountRealSid).messages.create({
+        to: telNumberTo,
+        from: telNumberFrom,
+        body: "message",
+    }, function(err, message) {
+        console.log(message.sid);
+    });
   }
 }
 
