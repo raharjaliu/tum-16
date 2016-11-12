@@ -67,9 +67,9 @@ contract lottery {
     
     function reset() onlyOwner{
       ended = false;
-      players = [];
+      players.length = 0;
       owner = 0;
-      winner = 0;
+      winner = NONE;
     }
 
      function getExisting(address _address, string _telephonNumber) internal returns (Player) {
