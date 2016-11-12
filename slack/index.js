@@ -39,7 +39,6 @@ var definition_string = JSON.stringify(definition_JSON);
 var definition = fs.readFileSync(filePath + binary_file, 'utf8').trim();
 
 var Lottery = web3.eth.contract(definition_JSON);
-console.log(definition);
 currentLottery = Lottery.at(definition);
 
 // The client will emit an RTM.AUTHENTICATED event on successful connection, with the 'rtm.start' payload if you want to cache it
@@ -109,4 +108,8 @@ slack.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
     }
   }
   console.log('Message:', message);
+});
+
+slack.on(CLIENT_EVENTS.CHANNEL_JOINED, function handleRtmMessage(channel) {
+  console.log(channel);
 });
