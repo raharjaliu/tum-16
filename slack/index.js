@@ -12,6 +12,7 @@ var coinbase = web3.eth.coinbase;
 
 // console.log(new Buffer("xoxb-103763892755-81Qf8fOQ5tFD6YOHaDt5J5f1").toString('base64'));
 var bot_token = process.env.SLACK_BOT_TOKEN || "xoxb-103158368448-iuqB2zji8VR5TGEs0UWi0o4X";
+var bot_name = 'fancypants';
 
 var slack = new RtmClient(bot_token, {
   logLevel: 'error',
@@ -43,10 +44,10 @@ currentLottery = Lottery.at(definition);
 
 // The client will emit an RTM.AUTHENTICATED event on successful connection, with the 'rtm.start' payload if you want to cache it
 slack.on(CLIENT_EVENTS.RTM.AUTHENTICATED, function (rtmStartData) {
-  console.log('Logged in as ' + rtmStartData.self.name + ' of team ' + rtmStartData.team.name + ', but not yet connected to a channel');
+  console.log('Logged in, but not yet connected to a channel');
   for (var user_id in slack.dataStore.users) {
     var user = slack.dataStore.users[user_id];
-    if (user.name === 'fancypants') {
+    if (user.name === bot_name) {
       me = user;
       break;
     }
@@ -81,7 +82,7 @@ var processAction = function (message) {
     }
   } else if (message.text.indexOf('balance') >= 0) {
     var balance = web3.eth.getBalance(coinbase);
-    slack.sendMessage('Hello <@'+ message.user +'>, your balance is ${balance.toString(10)}', channel.id);
+    slack.sendMessage('Hello <@'+ message.user +'>, your balance is ' + balance.toString(10), channel.id);
   } else if (message.text.indexOf('join') >= 0) {
     web3.personal.unlockAccount(web3.eth.accounts[0], '61407843');
     console.log(currentLottery);
