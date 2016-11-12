@@ -34,7 +34,7 @@ var Lottery = web3.eth.contract(definition_JSON);
 
 // The client will emit an RTM.AUTHENTICATED event on successful connection, with the `rtm.start` payload if you want to cache it
 slack.on(CLIENT_EVENTS.RTM.AUTHENTICATED, function (rtmStartData) {
-  console.log(`Logged in as ${rtmStartData.self.name} of team ${rtmStartData.team.name}, but not yet connected to a channel`);
+  console.log('Logged in as ${rtmStartData.self.name} of team ${rtmStartData.team.name}, but not yet connected to a channel');
   for (var user_id in slack.dataStore.users) {
     var user = slack.dataStore.users[user_id];
     if (user.name === 'lotterybot') {
@@ -47,24 +47,24 @@ slack.on(CLIENT_EVENTS.RTM.AUTHENTICATED, function (rtmStartData) {
 slack.start();
 
 var printLottery = function (channel) {
-  slack.sendMessage(`there is a lottery running on ${currentLottery.address}`, channel.id);
-  slack.sendMessage(`here is definition:`, channel.id);
-  slack.sendMessage(`${definition_string}`, channel.id);
+  slack.sendMessage('there is a lottery running on ${currentLottery.address}', channel.id);
+  slack.sendMessage('here is definition:', channel.id);
+  slack.sendMessage('${definition_string}', channel.id);
   console.log(currentLottery);
 }
 
 var processAction = function (message) {
   var channel = slack.dataStore.getChannelGroupOrDMById(message.channel);
   if (message.text.indexOf('lottery') >= 0 && message.text.indexOf('running') >= 0) {
-    slack.sendMessage(`Hello <@${message.user}>!`, channel.id);
+    slack.sendMessage('Hello <@${message.user}>!', channel.id);
     if (currentLottery === null) {
-      slack.sendMessage(`there is no lottery running`, channel.id);
+      slack.sendMessage('there is no lottery running', channel.id);
     } else {
       printLottery(channel);
     }
   } else if (message.text.indexOf('balance') >= 0) {
     var balance = web3.eth.getBalance(coinbase);
-    slack.sendMessage(`Hello <@${message.user}>, your balance is ${balance.toString(10)}`, channel.id);
+    slack.sendMessage('Hello <@${message.user}>, your balance is ${balance.toString(10)}', channel.id);
 
   } else if (message.text.indexOf('create') >= 0 && message.text.indexOf('lottery') >= 0 && currentLottery === null) {
     web3.personal.unlockAccount(web3.eth.accounts[0], "61407843")
