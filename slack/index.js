@@ -13,8 +13,6 @@ var coinbase = web3.eth.coinbase;
 // console.log(new Buffer("xoxb-103763892755-81Qf8fOQ5tFD6YOHaDt5J5f1").toString('base64'));
 var bot_token = process.env.SLACK_BOT_TOKEN || new Buffer("eG94Yi0xMDM3NjM4OTI3NTUtODFRZjhmT1E1dEZENllPSGFEdDVKNWYx", 'base64').toString('ascii');
 
-
-
 var slack = new RtmClient(bot_token, {
   logLevel: 'error',
   dataStore: new MemoryDataStore(),
