@@ -22,6 +22,8 @@ contract TheWinnerTakesItAll is mortal {
     uint public pNum;
     
     event AddedAddressMessage(address changer, string message);
+
+    event WinnerDeterminedMessage(address winner, string message);
     
     /*
      * Init
@@ -53,7 +55,7 @@ contract TheWinnerTakesItAll is mortal {
      * Add new address
      */
     function addAddress(address a) public {
-        if (participants.length < 15) {
+        if (participants.length < pNum) {
             if(now % 2 == 0) {
                 if(!addressExsist(a)) {
                     hashed = hashed * uint(sha3(a));
@@ -87,6 +89,7 @@ contract TheWinnerTakesItAll is mortal {
         } else {
             winner = participants[hashed % pNum];
             gameClosed = true;
+            WinnerDeterminedMessage(winner, "Finally we've got a winner!");
             return winner;
         }
     }
