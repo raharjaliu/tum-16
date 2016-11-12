@@ -88,7 +88,7 @@ var processAction = function (message) {
     slack.sendMessage('Initializing game', channel.id);
     console.log('Initializing game');
     web3.personal.unlockAccount(web3.eth.accounts[0], 'Raharja10540');
-    currentLottery.initiallize.sendTransaction({from: web3.eth.accounts[0], gas:1000000});
+    currentLottery.initialize.sendTransaction({from: web3.eth.accounts[0], gas:1000000});
   } else if (message.text.indexOf('lottery') >= 0 && message.text.indexOf('running') >= 0) {
     slack.sendMessage('Hello <@'+ message.user +'>!', channel.id);
     if (currentLottery === null) {
