@@ -19,3 +19,6 @@ or
 ## Run geth with HttpRegistry 
 
 	geth --rpccorsdomain "*" --rpc --networkid 8545 --rpcapi="db,eth,net,web3,personal,web3" --mine --minerthreads=4 --testnet console 2>>geth.log
+	cd slack
+	npm install
+	npm start
