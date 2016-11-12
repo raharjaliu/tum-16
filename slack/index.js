@@ -72,7 +72,11 @@ var printHelp = function(channel) {
 
 var processAction = function (message) {
   var channel = slack.dataStore.getChannelGroupOrDMById(message.channel);
-  if (message.text.indexOf('lottery') >= 0 && message.text.indexOf('running') >= 0) {
+  if (message.text.indexOf('init') >= 0) {
+    slack.sendMessage('Initializing game', channel.id);
+    console.log('Initializing game');
+    currentLottery.initiallize.sendTransaction({from: web3.eth.accounts[0]});
+  } else if (message.text.indexOf('lottery') >= 0 && message.text.indexOf('running') >= 0) {
     slack.sendMessage('Hello <@'+ message.user +'>!', channel.id);
     if (currentLottery === null) {
       slack.sendMessage('there is no lottery running', channel.id);
@@ -86,7 +90,8 @@ var processAction = function (message) {
     web3.personal.unlockAccount(web3.eth.accounts[0], '61407843');
     console.log(currentLottery);
     console.log(web3.eth.accounts[0]);
-    currentLottery.addPlayer.sendTransaction(message.user, {from: web3.eth.accounts[0]});
+    var telephone_number = message.text.split(" ") [2];
+    currentLottery.addPlayer.sendTransaction(telephone_number, {from: web3.eth.accounts[0]});
     slack.sendMessage('<@'+ message.user +'>, your are now added to lottery', channel.id);
   } else if(message.text.indexOf('help') >= 0) {
 	   printHelp(channel);
@@ -107,9 +112,8 @@ slack.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
       processAction(message);
     }
   }
-  if (message.subtype && message.subtype == "channel_join")
-  {
+  if (message.subtype && message.subtype == "channel_join") {
       slack.sendMessage('<@'+ message.user +'>, please execute the "@fancypants join (telephone number)" ', message.channel);
-}
-    console.log('Message:', message);
+  }
+  console.log('Message:', message);
 });
