@@ -110,6 +110,6 @@ slack.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
   console.log('Message:', message);
 });
 
-slack.on(CLIENT_EVENTS.CHANNEL_JOINED, function handleRtmMessage(channel) {
-  console.log(channel);
+slack.on(CLIENT_EVENTS.CHANNEL_JOINED, function handleRtmMessage(event) {
+  slack.sendMessage('<@'+ event.user +'>, please enter your telephone number', event.channel);
 });
