@@ -64,6 +64,13 @@ contract lottery {
     }
 
     function kill () onlyOwner {selfdestruct(owner);}
+    
+    function reset() onlyOwner{
+      ended = false;
+      players.length = 0;
+      owner = 0;
+      winner = NONE;
+    }
 
      function getExisting(address _address, string _telephonNumber) internal returns (Player) {
         for(uint i = 0; i < players.length; i++) {
