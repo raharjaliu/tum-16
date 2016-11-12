@@ -72,7 +72,7 @@ var processAction = function (message) {
 
 slack.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
   if (me !== null) {
-    if (message.text.indexOf(me.id) >= 0) {
+    if (message.text && message.text.indexOf(me.id) >= 0) {
       processAction(message);
     }
   }
