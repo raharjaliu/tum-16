@@ -14,21 +14,19 @@ contract lottery {
 
     address owner;
 
-    Player[] public players;
-    uint public hashed = 0;
-    address public winnerAddress;
-    bool public ended = false;
-
+    Player[] players;
+    uint hashed = 0;
+    address winnerAddress;
+    bool ended = false;
 
     event Debug1 (string msg, address data);
     event SendWinner (string telephonNumber, address a);
 
     modifier beforeEnded () {if (!ended) _; else throw;}
     modifier onlyOwner () {if (msg.sender == owner) _; else throw;}
-    modifier onlyOwnerAfterEnd () {if (msg.sender == owner && ended) _; else throw;}
 
-    function initialize() {
-      owner = msg.sender;
+    function lottery() {
+       owner = msg.sender;
     }
 
     function addPlayer (string telephonNumber) public beforeEnded  {
@@ -50,23 +48,20 @@ contract lottery {
     }
 
 
-    function endGame () public onlyOwner {
+    function chooseWinner() public onlyOwner {
       ended = true;
-    }
-
-    function chooseWinner() public onlyOwnerAfterEnd {
       Player winner = players[hashed % players.length];
       winnerAddress = winner._address;
       SendWinner(winner._telephonNumber, winner._address);
     }
 
-    function getWinner () public returns(address) {
+    function getWinner () public returns(address add) {
       return winnerAddress;
     }
 
-    function kill () public  onlyOwner {selfdestruct(owner);}
+    function kill () public onlyOwner {selfdestruct(owner);}
 
-    function reset() public onlyOwner{
+    function reset() public onlyOwner {
       ended = false;
       players.length = 0;
       owner = 0;
@@ -95,13 +90,12 @@ contract lottery {
 	}
 
     function updateHash(address a) internal {
-
       if(now % 2 == 0) {
         hashed = hashed * uint(sha3(a));
-        Debug1("Hashed with Adress: ",msg.sender);
+        Debug1("Hashed with Address: ", msg.sender);
       } else {
         hashed = hashed * uint(sha3(now));
-        Debug1("Hashed with Time: ",address(now));
+        Debug1("Hashed with Time: ", address(now));
       }
     }
 }
