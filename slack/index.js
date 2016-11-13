@@ -80,7 +80,7 @@ var printHelp = function(channel) {
   slack.sendMessage('It accepts the following commands: ',channel.id);
   slack.sendMessage('balance: - returns your account balance',channel.id);
   slack.sendMessage('running: - returns if a lottery is currently running',channel.id);
-  slack.sendMessage('join: - lets you join the active lottery',channel.id);
+  slack.sendMessage('join (<number>): - lets you join the active lottery with the given telephone number',channel.id);
   slack.sendMessage('end game - ends the current game ',channel.id);
   slack.sendMessage('notify - sends a SMS to the winner',channel.id);
 }
