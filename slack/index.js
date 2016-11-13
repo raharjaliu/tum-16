@@ -13,6 +13,7 @@ var Web3 = require('./node_modules/web3');
 var web3 = new Web3();
 //set provider for ethereum     ???
 web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
+var passphrase = "61407843";
 //wallet
 var coinbase = web3.eth.coinbase;
 //encoding obsolete
@@ -32,7 +33,7 @@ var slack = new RtmClient(bot_token, {
 //Global Variables
 var me = null;
 var currentLottery = null;
-//counter of participants
+//playerNum of participants
 var playerNum = 0;
 
 //twilio variables
@@ -84,10 +85,11 @@ var printHelp = function(channel) {
 
 var processAction = function (message) {
   var channel = slack.dataStore.getChannelGroupOrDMById(message.channel);
+
   if (message.text.indexOf('init') >= 0) {
     slack.sendMessage('Initializing game', channel.id);
     console.log('Initializing game');
-    web3.personal.unlockAccount(web3.eth.accounts[0], 'Raharja10540');
+    web3.personal.unlockAccount(web3.eth.accounts[0], passphrase);
     console.log(web3.eth.accounts);
     currentLottery.initialize.sendTransaction({from: web3.eth.accounts[0], gas:1000000});
     console.log("TEST");
@@ -101,19 +103,22 @@ var processAction = function (message) {
   } else if (message.text.indexOf('balance') >= 0) {
     var balance = web3.eth.getBalance(coinbase);
     slack.sendMessage('Hello <@'+ message.user +'>, your balance is ' + balance.toString(10), channel.id);
-  } else if ((message.text.indexOf('join') >= 0) && (message.text.split(" ").length == 2)) {
-    web3.personal.unlockAccount(web3.eth.accounts[0], 'Raharja10540');
-    console.log(currentLottery);
-    console.log(web3.eth.accounts[0]);
+  } else if ((message.text.indexOf('join') >= 0) && (message.text.split(" ").length == 3)) {
+    web3.personal.unlockAccount(web3.eth.accounts[0], passphrase);
     var telephone_number = message.text.split(" ") [2];
     currentLottery.addPlayer.sendTransaction(telephone_number, {from: web3.eth.accounts[0]});
     slack.sendMessage('<@'+ message.user +'>, your are now added to lottery', channel.id);
-    counter += 1;
-    if (counter == slack.users.length - 1) {
+    playerNum = playerNum + 1;
+    console.log('playerNum is [' + playerNum +']');
+    var threshold = channel.members.length - 1;
+    console.log('threshold [' + threshold + ']');
+    if (playerNum === threshold) {
       slack.sendMessage('All players are now registered. Starting game...', channel.id);
-      web3.personal.unlockAccount(web3.eth.accounts[0], 'Raharja10540');
+      web3.personal.unlockAccount(web3.eth.accounts[0], passphrase);
       currentLottery.endGame.sendTransaction({from: web3.eth.accounts[0]});
+      web3.personal.unlockAccount(web3.eth.accounts[0], passphrase);
       currentLottery.chooseWinner.sendTransaction({from: web3.eth.accounts[0]});
+      web3.personal.unlockAccount(web3.eth.accounts[0], passphrase);
       currentLottery.getWinner.sendTransaction({from: web3.eth.accounts[0]},
         function(error, result){
           if(!error)
