@@ -37,9 +37,8 @@ var currentLottery = null;
 var roomPlayers = {};
 
 //twilio variables
-var accountSid = 'SKfad8a61beb60a92f0993267f0921c4b2';
-var authToken = 'YKq7ukK3P0eDyipzY6UaEaAR6EUE2lqK';
-var accountRealSid = 'ACb44609cbe49e73fe7beefab010c29c3e';
+var accountSid = 'AC667f500ad2e63e966338539e33fe2498';
+var authToken = 'b1eb1c0573c3456aaeec3dde0e4ccdc8';
 var telNumberTo = "+4917643424166";
 var telNumberFrom = "+4915735994166";
 var client = require('twilio')(accountSid, authToken);
@@ -151,7 +150,7 @@ var processAction = function (message) {
       }
       console.log('calling [' + phone + ']')
       client.calls.create({
-        url: "https://handler.twilio.com/twiml/EH50cc57c16f97c4dba1acc1c3af741b77",
+        url: "https://handler.twilio.com/twiml/EHbfc3db37da3ec449a5ea036565771c2d",
         to: phone,
         from: "+4915735987566"
       }, function(err, call) {
