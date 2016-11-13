@@ -44,6 +44,7 @@ contract lottery {
     function kill () public onlyOwner {selfdestruct(owner);}
 
     function reset() public onlyOwner {
+      ended = false;
       players.length = 0;
       delete players;
       owner = 0;
