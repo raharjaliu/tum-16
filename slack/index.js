@@ -145,14 +145,14 @@ var processAction = function (message) {
 	   printHelp(channel);
   } else if (message.text.indexOf('notify') >= 0) {
     try {
-      var phone = result[0];
-      if (phone.indexOf('(')) {
-          phone = phone.substring(1, phone.length-1);
+      var phone = result;
+      if (phone.indexOf('(') >= 0) {
+          phone = phone.substring(1, (phone.length-1));
       }
       console.log('calling [' + phone + ']')
       client.calls.create({
         url: "https://handler.twilio.com/twiml/EH50cc57c16f97c4dba1acc1c3af741b77",
-        to: JSON.stringify(result),
+        to: phone,
         from: "+4915735987566"
       }, function(err, call) {
         if (call) {
