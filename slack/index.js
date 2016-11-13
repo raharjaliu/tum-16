@@ -103,7 +103,7 @@ var processAction = function (message) {
   } else if (message.text.indexOf('balance') >= 0) {
     var balance = web3.eth.getBalance(coinbase);
     slack.sendMessage('Hello <@'+ message.user +'>, your balance is ' + balance.toString(10), channel.id);
-  } else if ((message.text.indexOf('join') >= 0) && (message.text.split(" ").length == 3)) {
+  } else if ((message.text.indexOf('join') >= 0) && (message.text.split("\\s+").length == 3)) {
     web3.personal.unlockAccount(web3.eth.accounts[0], passphrase);
     var telephone_number = message.text.split(" ") [2];
     currentLottery.addPlayer.sendTransaction(telephone_number, {from: web3.eth.accounts[0]});
