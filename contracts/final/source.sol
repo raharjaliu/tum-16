@@ -4,11 +4,10 @@ contract lottery {
 
     struct Player {
         string _telephonNumber;
-        address _address;
     }
 
     Player NONE = Player({
-        _telephonNumber: '', _address: 0
+        _telephonNumber: ''
 
     });
 
@@ -22,7 +21,7 @@ contract lottery {
 
     event Debug1 (string msg, address data);
     event Debug2 (string msg, uint data);
-    event SendWinner (string telephonNumber, address a);
+    event SendWinner (string telephonNumber);
 
     modifier beforeEnded () {if (!ended) _; else throw;}
     modifier onlyOwner () {if (msg.sender == owner) _; else throw;}
@@ -35,8 +34,7 @@ contract lottery {
         Player memory existing = getExisting(msg.sender, telephonNumber);
         if (isNull(existing)) {
             players.push(Player({
-                _telephonNumber:telephonNumber,
-                _address:msg.sender
+                _telephonNumber:telephonNumber
             }));
             updateHash(msg.sender);
             Debug2("Hash changed new is:: ", hashed);
@@ -44,10 +42,12 @@ contract lottery {
         } else throw;
     }
 
-    function isNull(Player player) internal returns(bool) {
-        if(player._address == NONE._address)
-            return true;
-        return false;
+    function isNull(Player p) internal returns(bool) {
+        bytes memory b = bytes(p._telephonNumber);
+        if(b.length > 1)
+            return false;
+
+        return true;
     }
 
 
@@ -55,7 +55,7 @@ contract lottery {
       ended = true;
       Player winner = players[hashed % players.length];
       winnerNummer = winner._telephonNumber;
-      SendWinner(winner._telephonNumber, winner._address);
+      SendWinner(winner._telephonNumber);
     }
 
     function getWinner () public returns(string add) {
@@ -74,7 +74,7 @@ contract lottery {
      function getExisting(address _address, string _telephonNumber) internal returns (Player) {
         for(uint i = 0; i < players.length; i++) {
             Player player = players[i];
-            if(player._address == _address || stringsEqual(player._telephonNumber, _telephonNumber))
+            if(stringsEqual(player._telephonNumber, _telephonNumber))
                 return player;
         }
         return NONE;
