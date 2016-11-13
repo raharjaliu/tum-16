@@ -97,9 +97,11 @@ var endGame = function (channel) {
   }
   console.log(JSON.stringify(chooseResult));
   setTimeout(function() {
-    result = currentLottery.getWinner.call();
-    slack.sendMessage('Winner is ['+ result +']', channel.id);
-    roomPlayers[channel.id] = 0;
+    if (currentLottery.getWinner.call()) {
+      result = currentLottery.getWinner.call();
+      slack.sendMessage('Winner is ['+ result +']', channel.id);
+      roomPlayers[channel.id] = 0;
+    }
   }, 30000);
 }
 
@@ -144,14 +146,21 @@ var processAction = function (message) {
   } else if (message.text.indexOf('notify') >= 0) {
     try {
       var phone = result[0];
-      phone = phone.subString(1, phone.length-1);
+      if (phone.indexOf('(')) {
+          phone = phone.substring(1, phone.length-1);
+      }
       console.log('calling [' + phone + ']')
       client.calls.create({
         url: "https://handler.twilio.com/twiml/EH50cc57c16f97c4dba1acc1c3af741b77",
         to: JSON.stringify(result),
         from: "+4915735987566"
       }, function(err, call) {
-        process.stdout.write(call.sid);
+        if (call) {
+          process.stdout.write(call.sid);
+        }
+        if (err) {
+          console.log(err);
+        }
       });
     } catch (err) {
       console.log(err);
