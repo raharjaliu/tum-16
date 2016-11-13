@@ -171,7 +171,7 @@ var processAction = function (message) {
 
 slack.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
   if (me !== null) {
-    if (message.channel === 'C317CMXLH' && (message.text) && (message.text.indexOf(me.id) >= 0)) {
+    if (message.channel === 'C3185HTLH' && (message.text) && (message.text.indexOf(me.id) >= 0)) {
       console.log("Incoming message");
       processAction(message);
     }
