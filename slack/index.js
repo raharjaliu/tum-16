@@ -53,6 +53,7 @@ var definition = fs.readFileSync(filePath + binary_file, 'utf8').trim();
 
 var Lottery = web3.eth.contract(definition_JSON);
 currentLottery = Lottery.at(definition);
+var chooseResult = null;
 
 // The client will emit an RTM.AUTHENTICATED event on successful connection, with the 'rtm.start' payload if you want to cache it
 slack.on(CLIENT_EVENTS.RTM.AUTHENTICATED, function (rtmStartData) {
@@ -89,7 +90,11 @@ var endGame = function (channel) {
   slack.sendMessage('All players are now registered. Starting game...', channel.id);
   web3.personal.unlockAccount(web3.eth.accounts[0], passphrase);
   console.log('choose winner call')
-  var chooseResult = currentLottery.chooseWinner.sendTransaction({from: web3.eth.accounts[0]});
+  if (chooseResult === null) {
+    chooseResult = currentLottery.chooseWinner.sendTransaction({from: web3.eth.accounts[0]}, function(err,result) {
+      console.log('chooseWinner ['+JSON.stringify(err)+'] [' +JSON.stringify(result)+ ']')
+    });
+  }
   console.log(JSON.stringify(chooseResult));
   setTimeout(function() {
     slack.sendMessage('Winner is ['+ currentLottery.getWinner.call() +']', channel.id);
@@ -105,8 +110,7 @@ var processAction = function (message) {
     slack.sendMessage('Initializing game', channel.id);
     console.log('Initializing game');
     web3.personal.unlockAccount(web3.eth.accounts[0], passphrase);
-    console.log(web3.eth.accounts);
-    console.log("TEST");
+    chooseResult = null;
   } else if (message.text.indexOf('lottery') >= 0 && message.text.indexOf('running') >= 0) {
     slack.sendMessage('Hello <@'+ message.user +'>!', channel.id);
     if (currentLottery === null) {
@@ -117,10 +121,11 @@ var processAction = function (message) {
   } else if (message.text.indexOf('balance') >= 0) {
     var balance = web3.eth.getBalance(coinbase);
     slack.sendMessage('Hello <@'+ message.user +'>, your balance is ' + balance.toString(10), channel.id);
-  } else if ((message.text.indexOf('join') >= 0) && (message.text.split("\\s+").length == 3)) {
+  } else if ((message.text.indexOf('join') >= 0) && (message.text.split(" ").length == 3)) {
     web3.personal.unlockAccount(web3.eth.accounts[0], passphrase);
     var telephone_number = message.text.split(" ") [2];
-    currentLottery.addPlayer.sendTransaction(telephone_number, {from: web3.eth.accounts[0]});
+    var addResult = currentLottery.addPlayer.sendTransaction(telephone_number, {from: web3.eth.accounts[0]});
+    console.log(addResult);
     slack.sendMessage('<@'+ message.user +'>, your are now added to lottery', channel.id);
     roomPlayers[channel.id] = roomPlayers[channel.id] + 1;
     console.log('playerNum is [' + roomPlayers[channel.id] +']');
