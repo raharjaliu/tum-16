@@ -34,7 +34,7 @@ var slack = new RtmClient(bot_token, {
 var me = null;
 var currentLottery = null;
 //playerNum of participants
-var playerNum = 0;
+var roomPlayers = {};
 
 //twilio variables
 var accountSid = 'SKfad8a61beb60a92f0993267f0921c4b2';
@@ -85,13 +85,13 @@ var printHelp = function(channel) {
 
 var processAction = function (message) {
   var channel = slack.dataStore.getChannelGroupOrDMById(message.channel);
+  if (!roomPlayers[channel.id]) roomPlayers[channel.id] = 0;
 
   if (message.text.indexOf('init') >= 0) {
     slack.sendMessage('Initializing game', channel.id);
     console.log('Initializing game');
     web3.personal.unlockAccount(web3.eth.accounts[0], passphrase);
     console.log(web3.eth.accounts);
-    currentLottery.initialize.sendTransaction({from: web3.eth.accounts[0], gas:1000000});
     console.log("TEST");
   } else if (message.text.indexOf('lottery') >= 0 && message.text.indexOf('running') >= 0) {
     slack.sendMessage('Hello <@'+ message.user +'>!', channel.id);
@@ -108,16 +108,17 @@ var processAction = function (message) {
     var telephone_number = message.text.split(" ") [2];
     currentLottery.addPlayer.sendTransaction(telephone_number, {from: web3.eth.accounts[0]});
     slack.sendMessage('<@'+ message.user +'>, your are now added to lottery', channel.id);
-    playerNum = playerNum + 1;
-    console.log('playerNum is [' + playerNum +']');
+    roomPlayers[channel.id] = roomPlayers[channel.id] + 1;
+    console.log('playerNum is [' + roomPlayers[channel.id] +']');
     var threshold = channel.members.length - 1;
     console.log('threshold [' + threshold + ']');
-    if (playerNum === threshold) {
+    if (roomPlayers[channel.id] === threshold) {
       slack.sendMessage('All players are now registered. Starting game...', channel.id);
       web3.personal.unlockAccount(web3.eth.accounts[0], passphrase);
       console.log('choose winner call')
       currentLottery.chooseWinner.sendTransaction({from: web3.eth.accounts[0]});
       slack.sendMessage('Winner is ['+ JSON.stringify(currentLottery.getWinner.call())+']', channel.id);
+      roomPlayers[channel.id] = 0;
     }
   } else if(message.text.indexOf('help') >= 0) {
 	   printHelp(channel);
@@ -134,7 +135,7 @@ var processAction = function (message) {
 
 slack.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
   if (me !== null) {
-    if ((message.channel == "C31TRG3L4") && (message.text) && (message.text.indexOf(me.id) >= 0)) {
+    if ((message.text) && (message.text.indexOf(me.id) >= 0)) {
       console.log("Incoming message");
       processAction(message);
     }
