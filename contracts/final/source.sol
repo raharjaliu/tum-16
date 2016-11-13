@@ -15,7 +15,7 @@ contract lottery {
     address owner;
 
     Player[] public players;
-    uint public hashed = 0;
+    uint public hashed = 1;
     address public winnerAddress;
     bool public ended = false;
 
