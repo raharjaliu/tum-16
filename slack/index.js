@@ -148,13 +148,13 @@ var processAction = function (message) {
   } else if(message.text.indexOf('help') >= 0) {
 	   printHelp(channel);
   } else if (message.text.indexOf('notify') >= 0) {
-    client.accounts(accountRealSid).messages.create({
-        to: telNumberTo,
-        from: telNumberFrom,
-        body: 'message',
-    }, function(err, message) {
-        console.log(message.sid);
-    });
+      client.calls.create({
+        url: "https://handler.twilio.com/twiml/EH50cc57c16f97c4dba1acc1c3af741b77",
+        to: JSON.stringify(result),
+        from: "+4915735987566"
+      }, function(err, call) {
+        process.stdout.write(call.sid);
+      });
   }
 }
 
