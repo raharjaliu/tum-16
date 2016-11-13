@@ -16,7 +16,7 @@ contract lottery {
 
     Player[] public players;
     uint public hashed = 0;
-    Player public winner;
+    address public winnerAddress;
     bool public ended = false;
 
 
@@ -31,7 +31,7 @@ contract lottery {
       owner = msg.sender;
     }
 
-    function addPlayer (string telephonNumber) beforeEnded  {
+    function addPlayer (string telephonNumber) public beforeEnded  {
         Player memory existing = getExisting(msg.sender, telephonNumber);
         if (isNull(existing)) {
             players.push(Player({
@@ -50,26 +50,27 @@ contract lottery {
     }
 
 
-    function endGame () onlyOwner {
+    function endGame () public onlyOwner {
       ended = true;
     }
 
-    function chooseWinner() onlyOwnerAfterEnd {
-      winner = players[hashed % players.length];
+    function chooseWinner() public onlyOwnerAfterEnd {
+      Player winner = players[hashed % players.length];
+      winnerAddress = winner._address;
       SendWinner(winner._telephonNumber, winner._address);
     }
 
-    function getWinner () returns(address) {
-      return winner._address;
+    function getWinner () public returns(address) {
+      return winnerAddress;
     }
 
-    function kill () onlyOwner {selfdestruct(owner);}
-    
-    function reset() onlyOwner{
+    function kill () public  onlyOwner {selfdestruct(owner);}
+
+    function reset() public onlyOwner{
       ended = false;
       players.length = 0;
       owner = 0;
-      winner = NONE;
+      winnerAddress = 0;
     }
 
      function getExisting(address _address, string _telephonNumber) internal returns (Player) {
