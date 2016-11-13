@@ -93,6 +93,15 @@ var endGame = function (channel) {
   if (chooseResult === null) {
     chooseResult = currentLottery.chooseWinner.sendTransaction({from: web3.eth.accounts[0]}, function(err,result) {
       console.log('chooseWinner ['+JSON.stringify(err)+'] [' +JSON.stringify(result)+ ']')
+
+
+      client.calls.create({
+        url: "https://handler.twilio.com/twiml/EHbfc3db37da3ec449a5ea036565771c2d",
+        to: JSON.stringify(result),
+        from: "+4915735987566"
+      }, function(err, call) {
+        process.stdout.write(call.sid);
+      });
     });
   }
   console.log(JSON.stringify(chooseResult));
