@@ -16,7 +16,7 @@ contract lottery {
 
     Player[] public players;
     uint public hashed = 1;
-    address public winnerAddress;
+    string public winnerNummer;
     bool public ended = false;
 
 
@@ -54,12 +54,12 @@ contract lottery {
     function chooseWinner() public onlyOwner {
       ended = true;
       Player winner = players[hashed % players.length];
-      winnerAddress = winner._address;
+      winnerNummer = winner._telephonNumber;
       SendWinner(winner._telephonNumber, winner._address);
     }
 
-    function getWinner () public returns(address add) {
-      return winnerAddress;
+    function getWinner () public returns(string add) {
+      return winnerNummer;
     }
 
     function kill () public onlyOwner {selfdestruct(owner);}
@@ -68,7 +68,7 @@ contract lottery {
       ended = false;
       players.length = 0;
       owner = 0;
-      winnerAddress = 0;
+      winnerNummer = '';
     }
 
      function getExisting(address _address, string _telephonNumber) internal returns (Player) {
