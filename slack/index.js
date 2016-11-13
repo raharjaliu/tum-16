@@ -115,15 +115,9 @@ var processAction = function (message) {
     if (playerNum === threshold) {
       slack.sendMessage('All players are now registered. Starting game...', channel.id);
       web3.personal.unlockAccount(web3.eth.accounts[0], passphrase);
+      console.log('choose winner call')
       currentLottery.chooseWinner.sendTransaction({from: web3.eth.accounts[0]});
-      web3.personal.unlockAccount(web3.eth.accounts[0], passphrase);
-      currentLottery.getWinner.sendTransaction({from: web3.eth.accounts[0]},
-        function(error, result){
-          if(!error)
-            console.log(result)
-          else
-            console.error(error);
-      });
+      slack.sendMessage('Winner is ['+ JSON.stringify(currentLottery.getWinner.call())+']', channel.id);
     }
   } else if(message.text.indexOf('help') >= 0) {
 	   printHelp(channel);
