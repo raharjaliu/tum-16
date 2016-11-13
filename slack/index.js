@@ -83,6 +83,18 @@ var printHelp = function(channel) {
   slack.sendMessage('join: - lets you join the active lottery',channel.id);
 }
 
+var endGame = function (channel) {
+  slack.sendMessage('All players are now registered. Starting game...', channel.id);
+  web3.personal.unlockAccount(web3.eth.accounts[0], passphrase);
+  console.log('choose winner call')
+  var chooseResult = currentLottery.chooseWinner.sendTransaction({from: web3.eth.accounts[0]});
+  console.log(JSON.stringify(chooseResult));
+  setTimeout(function() {
+    slack.sendMessage('Winner is ['+ currentLottery.getWinner.call() +']', channel.id);
+    roomPlayers[channel.id] = 0;
+  }, 30000);
+}
+
 var processAction = function (message) {
   var channel = slack.dataStore.getChannelGroupOrDMById(message.channel);
   if (!roomPlayers[channel.id]) roomPlayers[channel.id] = 0;
@@ -113,13 +125,10 @@ var processAction = function (message) {
     var threshold = channel.members.length - 1;
     console.log('threshold [' + threshold + ']');
     if (roomPlayers[channel.id] === threshold) {
-      slack.sendMessage('All players are now registered. Starting game...', channel.id);
-      web3.personal.unlockAccount(web3.eth.accounts[0], passphrase);
-      console.log('choose winner call')
-      currentLottery.chooseWinner.sendTransaction({from: web3.eth.accounts[0]});
-      slack.sendMessage('Winner is ['+ JSON.stringify(currentLottery.getWinner.call())+']', channel.id);
-      roomPlayers[channel.id] = 0;
+      endGame(channel);
     }
+  } else if (message.text.indexOf("end game") >= 0) {
+    endGame(channel);
   } else if(message.text.indexOf('help') >= 0) {
 	   printHelp(channel);
   } else if (message.text.indexOf('notify') >= 0) {
