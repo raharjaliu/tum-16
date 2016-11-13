@@ -54,6 +54,7 @@ var definition = fs.readFileSync(filePath + binary_file, 'utf8').trim();
 var Lottery = web3.eth.contract(definition_JSON);
 currentLottery = Lottery.at(definition);
 var chooseResult = null;
+var theWinner = null;
 
 // The client will emit an RTM.AUTHENTICATED event on successful connection, with the 'rtm.start' payload if you want to cache it
 slack.on(CLIENT_EVENTS.RTM.AUTHENTICATED, function (rtmStartData) {
@@ -92,16 +93,9 @@ var endGame = function (channel) {
   console.log('choose winner call')
   if (chooseResult === null) {
     chooseResult = currentLottery.chooseWinner.sendTransaction({from: web3.eth.accounts[0]}, function(err,result) {
-      console.log('chooseWinner ['+JSON.stringify(err)+'] [' +JSON.stringify(result)+ ']')
-
-
-      client.calls.create({
-        url: "https://handler.twilio.com/twiml/EHbfc3db37da3ec449a5ea036565771c2d",
-        to: JSON.stringify(result),
-        from: "+4915735987566"
-      }, function(err, call) {
-        process.stdout.write(call.sid);
-      });
+      theWinner = JSON.stringify(result);
+      console.log('chooseWinner ['+JSON.stringify(err)+'] [' +JSON.stringify(result)+ ']');
+      console.log('should we notify the winner?');
     });
   }
   console.log(JSON.stringify(chooseResult));
@@ -148,13 +142,13 @@ var processAction = function (message) {
   } else if(message.text.indexOf('help') >= 0) {
 	   printHelp(channel);
   } else if (message.text.indexOf('notify') >= 0) {
-      client.calls.create({
-        url: "https://handler.twilio.com/twiml/EH50cc57c16f97c4dba1acc1c3af741b77",
-        to: JSON.stringify(result),
-        from: "+4915735987566"
-      }, function(err, call) {
-        process.stdout.write(call.sid);
-      });
+    client.calls.create({
+      url: "https://handler.twilio.com/twiml/EH50cc57c16f97c4dba1acc1c3af741b77",
+      to: theWinner,
+      from: "+4915735987566"
+    }, function(err, call) {
+      process.stdout.write(call.sid);
+    });
   }
 }
 
