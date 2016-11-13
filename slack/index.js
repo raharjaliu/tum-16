@@ -54,6 +54,8 @@ var definition = fs.readFileSync(filePath + binary_file, 'utf8').trim();
 var Lottery = web3.eth.contract(definition_JSON);
 currentLottery = Lottery.at(definition);
 var chooseResult = null;
+var result = null;
+var gasPrice = 3000000;
 
 // The client will emit an RTM.AUTHENTICATED event on successful connection, with the 'rtm.start' payload if you want to cache it
 slack.on(CLIENT_EVENTS.RTM.AUTHENTICATED, function (rtmStartData) {
@@ -87,26 +89,16 @@ var printHelp = function(channel) {
 }
 
 var endGame = function (channel) {
-  slack.sendMessage('All players are now registered. Starting game...', channel.id);
+  slack.sendMessage('All players are now registered. Calculating winner!', channel.id);
   web3.personal.unlockAccount(web3.eth.accounts[0], passphrase);
   console.log('choose winner call')
   if (chooseResult === null) {
-    chooseResult = currentLottery.chooseWinner.sendTransaction({from: web3.eth.accounts[0]}, function(err,result) {
-      console.log('chooseWinner ['+JSON.stringify(err)+'] [' +JSON.stringify(result)+ ']')
-
-
-      client.calls.create({
-        url: "https://handler.twilio.com/twiml/EHbfc3db37da3ec449a5ea036565771c2d",
-        to: JSON.stringify(result),
-        from: "+4915735987566"
-      }, function(err, call) {
-        process.stdout.write(call.sid);
-      });
-    });
+    chooseResult = currentLottery.chooseWinner.sendTransaction({from: web3.eth.accounts[0], gas: gasPrice - 2000000});
   }
   console.log(JSON.stringify(chooseResult));
   setTimeout(function() {
-    slack.sendMessage('Winner is ['+ currentLottery.getWinner.call() +']', channel.id);
+    result = currentLottery.getWinner.call();
+    slack.sendMessage('Winner is ['+ result +']', channel.id);
     roomPlayers[channel.id] = 0;
   }, 30000);
 }
@@ -119,7 +111,8 @@ var processAction = function (message) {
     slack.sendMessage('Initializing game', channel.id);
     console.log('Initializing game');
     web3.personal.unlockAccount(web3.eth.accounts[0], passphrase);
-    currentLottery.initialize.sendTransaction({from:web3.eth.accounts[0], gas: 1000000});
+    currentLottery.reset.sendTransaction({from:web3.eth.accounts[0],  gas: gasPrice});
+    currentLottery.initialize.sendTransaction({from:web3.eth.accounts[0],  gas: gasPrice - 2000});
     chooseResult = null;
   } else if (message.text.indexOf('lottery') >= 0 && message.text.indexOf('running') >= 0) {
     slack.sendMessage('Hello <@'+ message.user +'>!', channel.id);
@@ -134,7 +127,7 @@ var processAction = function (message) {
   } else if ((message.text.indexOf('join') >= 0) && (message.text.split(" ").length == 3)) {
     web3.personal.unlockAccount(web3.eth.accounts[0], passphrase);
     var telephone_number = message.text.split(" ") [2];
-    var addResult = currentLottery.addPlayer.sendTransaction(telephone_number, {from: web3.eth.accounts[0]});
+    var addResult = currentLottery.addPlayer.sendTransaction(telephone_number, {from: web3.eth.accounts[0], gas: gasPrice - 1000000});
     console.log(addResult);
     slack.sendMessage('<@'+ message.user +'>, your are now added to lottery', channel.id);
     roomPlayers[channel.id] = roomPlayers[channel.id] + 1;
@@ -149,6 +142,10 @@ var processAction = function (message) {
   } else if(message.text.indexOf('help') >= 0) {
 	   printHelp(channel);
   } else if (message.text.indexOf('notify') >= 0) {
+    try {
+      var phone = result[0];
+      phone = phone.subString(1, phone.length-1);
+      console.log('calling [' + phone + ']')
       client.calls.create({
         url: "https://handler.twilio.com/twiml/EH50cc57c16f97c4dba1acc1c3af741b77",
         to: JSON.stringify(result),
@@ -156,13 +153,17 @@ var processAction = function (message) {
       }, function(err, call) {
         process.stdout.write(call.sid);
       });
+    } catch (err) {
+      console.log(err);
+    }
+
   }
   web3.eth.getBlock("pending", true).transactions;
 }
 
 slack.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
   if (me !== null) {
-    if ((message.text) && (message.text.indexOf(me.id) >= 0)) {
+    if (message.channel === 'C317CMXLH' && (message.text) && (message.text.indexOf(me.id) >= 0)) {
       console.log("Incoming message");
       processAction(message);
     }
