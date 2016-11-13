@@ -119,6 +119,7 @@ var processAction = function (message) {
     slack.sendMessage('Initializing game', channel.id);
     console.log('Initializing game');
     web3.personal.unlockAccount(web3.eth.accounts[0], passphrase);
+    currentLottery.initialize.sendTransaction({from:web3.eth.accounts[0], gas: 1000000});
     chooseResult = null;
   } else if (message.text.indexOf('lottery') >= 0 && message.text.indexOf('running') >= 0) {
     slack.sendMessage('Hello <@'+ message.user +'>!', channel.id);
@@ -156,6 +157,7 @@ var processAction = function (message) {
         process.stdout.write(call.sid);
       });
   }
+  web3.eth.getBlock("pending", true).transactions;
 }
 
 slack.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
