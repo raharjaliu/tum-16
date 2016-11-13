@@ -14,19 +14,21 @@ contract lottery {
 
     address owner;
 
-    Player[] players;
-    uint hashed = 0;
-    address winnerAddress;
-    bool ended = false;
+    Player[] public players;
+    uint public hashed = 0;
+    address public winnerAddress;
+    bool public ended = false;
+
 
     event Debug1 (string msg, address data);
+    event Debug2 (string msg, uint data);
     event SendWinner (string telephonNumber, address a);
 
     modifier beforeEnded () {if (!ended) _; else throw;}
     modifier onlyOwner () {if (msg.sender == owner) _; else throw;}
 
-    function lottery() {
-       owner = msg.sender;
+    function initialize() {
+      owner = msg.sender;
     }
 
     function addPlayer (string telephonNumber) public beforeEnded  {
@@ -37,6 +39,7 @@ contract lottery {
                 _address:msg.sender
             }));
             updateHash(msg.sender);
+            Debug2("Hash changed new is:: ", hashed);
             Debug1("Participant Added: ", msg.sender);
         } else throw;
     }
