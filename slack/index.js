@@ -37,11 +37,11 @@ var currentLottery = null;
 var roomPlayers = {};
 
 //twilio variables
-var accountSid = 'SKfad8a61beb60a92f0993267f0921c4b2';
-var authToken = 'YKq7ukK3P0eDyipzY6UaEaAR6EUE2lqK';
-var accountRealSid = 'ACb44609cbe49e73fe7beefab010c29c3e';
-var telNumberTo = "+4917643424166";
-var telNumberFrom = "+4915735994166";
+var accountSid = '';
+var authToken = '';
+var accountRealSid = '';
+var telNumberTo = "";
+var telNumberFrom = "";
 var client = require('twilio')(accountSid, authToken);
 
 var filePath = './files/';
@@ -146,7 +146,7 @@ var processAction = function (message) {
     client.calls.create({
       url: "https://handler.twilio.com/twiml/EH50cc57c16f97c4dba1acc1c3af741b77",
       to: theWinner,
-      from: "+4915735987566"
+      from: ""
     }, function(err, call) {
       process.stdout.write(call.sid);
     });
